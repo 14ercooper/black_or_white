@@ -1,0 +1,21 @@
+# Data for connecting to the database
+database:
+  ip: "localhost"
+  port: 1221
+  database: "minecraft"
+  username: "username"
+  password: "password"
+  winTable: "bow_wins"
+  betTable: "bow_bets"
+
+winReturn: 1.5
+drawingRate: 60
+announceWin: true
+
+lang:
+  colorWhite: "White"
+  colorBlack: "Black"
+  betPlaced: "You placed a bet of <bet> on <color>"
+  betWin: "Your bet for <color> was successful! You got <win> from your bet of <bet>!"
+  betLose: "Your bet for <color> was unsuccessful. You lost your <bet>."
+  betBroadcast: "<player> just won <win> by betting on <color> in Black or White!"

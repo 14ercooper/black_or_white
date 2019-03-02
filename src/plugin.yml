@@ -1,0 +1,12 @@
+name: BlackOrWhite
+main: com.fourteenercooper.blackorwhite.Main
+version: 0.1
+description: A simple betting plugin with customizable winnings.
+author: 14er
+api-version: 1.8.8
+depend: [Vault]
+prefix: BoW
+commands:
+  ix:
+    description: Used to place a bet on a color.
+    usage: /ix <amount> <color>
