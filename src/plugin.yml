@@ -7,6 +7,6 @@ api-version: 1.8.8
 depend: [Vault]
 prefix: BoW
 commands:
-  ix:
+  tx:
     description: Used to place a bet on a color.
-    usage: /ix <amount> <color>
+    usage: /tx <tai|xiu> <amounnt>
