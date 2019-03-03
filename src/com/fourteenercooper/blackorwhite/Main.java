@@ -1,5 +1,7 @@
 package com.fourteenercooper.blackorwhite;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -16,9 +18,12 @@ public class Main extends JavaPlugin {
 
 	public static FileConfiguration pluginConfig; // The config file
 	private static Economy econ; // This server's economy
+	public static Main main; // A reference to this plugin
+	public static MySQLWrapper wrapper;
 	
 	@Override
 	public void onEnable () {
+		main = this;
 		// Handle configuration
 		saveDefaultConfig();
 		pluginConfig = getConfig();
@@ -28,6 +33,14 @@ public class Main extends JavaPlugin {
 			this.getLogger().severe("Disabled due to no Vault found. This plugin requires Vault.");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
+		}
+		
+		// Sets up the MySQL wrapper
+		wrapper = new MySQLWrapper();
+		try {
+			wrapper.initTables();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	
