@@ -29,7 +29,7 @@ public class MySQLWrapper {
 		r.runTaskAsynchronously(Main.main);
 	}
 	
-	// Stores the informaion into the betsTable table
+	// Stores the information into the betsTable table
 	public void storeBet (String username, String color, String bet) {
 		BukkitRunnable r = new BukkitRunnable() {
 		    @Override

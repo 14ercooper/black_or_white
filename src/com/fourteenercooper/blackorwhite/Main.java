@@ -42,6 +42,9 @@ public class Main extends JavaPlugin {
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+		
+		// Registers the bet command
+		this.getCommand("tx").setExecutor(new BetCommand());
 	}
 	
 	@Override
