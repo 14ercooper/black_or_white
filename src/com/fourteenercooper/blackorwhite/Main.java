@@ -20,6 +20,7 @@ public class Main extends JavaPlugin {
 	private static Economy econ; // This server's economy
 	public static Main main; // A reference to this plugin
 	public static MySQLWrapper wrapper;
+	public static DrawingManager manager;
 	
 	@Override
 	public void onEnable () {
@@ -45,6 +46,10 @@ public class Main extends JavaPlugin {
 		
 		// Registers the bet command
 		this.getCommand("tx").setExecutor(new BetCommand());
+		
+		// Handles setting up the drawing manager
+		manager = new DrawingManager();
+		manager.scheduleDrawing();
 	}
 	
 	@Override
