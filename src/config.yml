@@ -13,8 +13,6 @@ drawingRate: 60
 announceWin: true
 
 lang:
-  colorWhite: "White"
-  colorBlack: "Black"
   betPlaced: "You placed a bet of <bet> on <color>"
   notEnoughFunds: "You don't have enough money to place that bet!"
   betWin: "Your bet for <color> was successful! You got <win> from your bet of <bet>!"
