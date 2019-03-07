@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin {
 	public static Main main; // A reference to this plugin
 	public static MySQLWrapper wrapper;
 	public static DrawingManager manager;
+	public static BukkitScheduler scheduler;
 	
 	@Override
 	public void onEnable () {
@@ -49,6 +51,7 @@ public class Main extends JavaPlugin {
 		
 		// Handles setting up the drawing manager
 		manager = new DrawingManager();
+		scheduler = Bukkit.getServer().getScheduler();
 		manager.scheduleDrawing();
 	}
 	

@@ -22,7 +22,7 @@ public class BetCommand implements CommandExecutor {
 						if (Main.getEconomy().getBalance(username) - Double.parseDouble(args[1]) > 0) {
 							// Place the bet and take the money
 							Main.getEconomy().withdrawPlayer(username, Double.parseDouble(args[1]));
-							Main.wrapper.storeBet(username, args[0], args[1]);
+							Main.wrapper.storeBet(username, args[0].toLowerCase(), args[1]);
 							sender.sendMessage(ConfigParser.getLangData("betPlaced").replace("<bet>", args[1]).replace("<color>", args[0]));
 							return true;
 						}
