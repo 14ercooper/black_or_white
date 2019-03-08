@@ -13,6 +13,8 @@ public class BetCommand implements CommandExecutor {
 		// Is this a player who send the correct command?
 		if (sender instanceof Player && label.equalsIgnoreCase("tx")) {
 			// Did they bet on a color?
+			if (args.length < 2)
+				return false;
 			if (args[0].equalsIgnoreCase("tai") || args[0].equalsIgnoreCase("xiu")) {
 				// Did they actually bet money?
 				try {
@@ -24,6 +26,9 @@ public class BetCommand implements CommandExecutor {
 							Main.getEconomy().withdrawPlayer(username, Double.parseDouble(args[1]));
 							Main.wrapper.storeBet(username, args[0].toLowerCase(), args[1]);
 							sender.sendMessage(ConfigParser.getLangData("betPlaced").replace("<bet>", args[1]).replace("<color>", args[0]));
+							return true;
+						} else {
+							((Player) sender).sendMessage(ConfigParser.getLangData("notEnoughFunds"));
 							return true;
 						}
 					}

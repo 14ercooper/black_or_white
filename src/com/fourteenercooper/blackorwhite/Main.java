@@ -24,6 +24,10 @@ public class Main extends JavaPlugin {
 	public static DrawingManager manager;
 	public static BukkitScheduler scheduler;
 	
+	public static void main (String[] args) {
+		System.out.println("This is a Spigot plugin, not a runnable jar!");		
+	}
+	
 	@Override
 	public void onEnable () {
 		main = this;
@@ -42,7 +46,7 @@ public class Main extends JavaPlugin {
 		wrapper = new MySQLWrapper();
 		try {
 			wrapper.initTables();
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		

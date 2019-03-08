@@ -9,4 +9,4 @@ prefix: BoW
 commands:
   tx:
     description: Used to place a bet on a color.
-    usage: /tx <tai|xiu> <amounnt>
+    usage: /tx <tai|xiu> <amount>

@@ -19,9 +19,9 @@ public class MySQLWrapper {
 		    public void run() {
 		        try {
 					connect();
-			        makeQuery("INSERT INTO " + winsTable + " VALUES ('" + username + "','" + color + "'," + bet + "," + win + ");");
+					executeQuery("INSERT INTO " + winsTable + " VALUES ('" + username + "','" + color + "'," + bet + "," + win + ");");
 			        disconnect();
-				} catch (ClassNotFoundException | SQLException e) {
+				} catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 		    }
@@ -36,9 +36,9 @@ public class MySQLWrapper {
 		    public void run() {
 		        try {
 					connect();
-			        makeQuery("INSERT INTO " + betsTable + " VALUES ('" + username + "','" + color + "'," + bet + ");");
+					executeQuery("INSERT INTO " + betsTable + " VALUES ('" + username + "','" + color + "'," + bet + ");");
 			        disconnect();
-				} catch (ClassNotFoundException | SQLException e) {
+				} catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 		    }
@@ -47,23 +47,21 @@ public class MySQLWrapper {
 	}
 	
 	// Gets a hashmap of all placed bets
-	public HashMap<String, String> getBets (String color) throws SQLException {
+	public HashMap<String, String> getBets (String color) throws SQLException, InstantiationException, IllegalAccessException {
 		HashMap<String, String> betsList = new HashMap<String, String>();
 		ResultSet results = null;
     	try {
 			connect();
 	        results = makeQuery("SELECT * FROM " + betsTable + " WHERE COLOR = '" + color + "';");
-	        disconnect();
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-    	if (results != null) {
-    		while (results.next()) {
-    			String uname = results.getString ("username");
-    			String bet = results.getString("bet");
-    			betsList.put(uname, bet);
-    		}
+    	while (results.next()) {
+    		String uname = results.getString ("username");
+    		String bet = results.getString("bet");
+    		betsList.put(uname, bet);
     	}
+        disconnect();
 		return betsList;
 	}
 	
@@ -71,7 +69,7 @@ public class MySQLWrapper {
 	public void resetTable (String tableName) {
 		try {
 			clearTable(tableName);
-		} catch (SQLException e) {
+		} catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
@@ -84,7 +82,7 @@ public class MySQLWrapper {
 	
 	// Load the database variables from the config file
 	private void loadDatabaseVars () {
-		host = ConfigParser.getDatabaseInfo("host");
+		host = ConfigParser.getDatabaseInfo("ip");
 		port = Integer.parseInt(ConfigParser.getDatabaseInfo("port"));
 		database = ConfigParser.getDatabaseInfo("database");
 		username = ConfigParser.getDatabaseInfo("username");
@@ -94,7 +92,7 @@ public class MySQLWrapper {
 	}
 	
 	// Connect to MySQL server
-	private void connect () throws SQLException, ClassNotFoundException {
+	private void connect () throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 	    if (connection != null && !connection.isClosed()) {
 	        return;
 	    }
@@ -104,8 +102,10 @@ public class MySQLWrapper {
 	        if (connection != null && !connection.isClosed()) {
 	            return;
 	        } 
-	        Class.forName("com.mysql.jdbc.Driver");
-	        connection = DriverManager.getConnection("jdbc:mysql://" + this.host+ ":" + this.port + "/" + this.database, this.username, this.password);
+	        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+	        connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?" +
+	                                       "user=" + this.username + "&password=" + this.password);
+	        // connection = DriverManager.getConnection("jdbc:mysql://" + this.host+ ":" + this.port + "/" + this.database, this.username, this.password);
 	    }
 	}
 	
@@ -125,7 +125,7 @@ public class MySQLWrapper {
 		return (connection == null ? false : true);
 	}
 	
-	public void initTables () throws SQLException, ClassNotFoundException {
+	public void initTables () throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		connect();
 		DatabaseMetaData dbm = connection.getMetaData();
 		
@@ -135,7 +135,7 @@ public class MySQLWrapper {
 		}
 		else {
 		  // Table does not exist, so we create it
-			makeQuery("CREATE TABLE " + winsTable + "(username varchar(255), color varchar(5), bet bigint, win bigint);");
+			executeQuery("CREATE TABLE " + winsTable + " (username varchar(255), color varchar(5), bet bigint, win bigint);");
 		}
 		
 		tables = dbm.getTables(null, null, betsTable, null);
@@ -144,13 +144,24 @@ public class MySQLWrapper {
 		}
 		else {
 		  // Table does not exist, so we create it
-			makeQuery("CREATE TABLE " + betsTable + " (username varchar(255), color varchar(5), bet bigint);");
+			executeQuery("CREATE TABLE " + betsTable + " (username varchar(255), color varchar(5), bet bigint);");
 		}
 		disconnect();
 	}
 	
-	private void clearTable (String tableName) throws SQLException {
-		makeQuery ("TRUNCATE TABLE " + tableName + ";");
+	private void clearTable (String tableName) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+		connect();
+		executeQuery ("TRUNCATE TABLE " + tableName + ";");
+		disconnect();
+	}
+	
+	private boolean executeQuery (String query) throws SQLException {
+		if (!isConnected())
+			return false;
+		boolean results;
+		Statement statement = connection.createStatement();
+		results = statement.execute(query);
+		return results;
 	}
 	
 	private ResultSet makeQuery (String query) throws SQLException {

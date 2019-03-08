@@ -18,4 +18,4 @@ lang:
   betWin: "Your bet for <color> was successful! You got <win> from your bet of <bet>!"
   betLose: "Your bet for <color> was unsuccessful. You lost your <bet>."
   betBroadcast: "<player> just won <win> by betting on <color> in Black or White!"
-  noBetsPlaced: "No bets were placed for the most recent drawing! Place a bet with /tx"
+  noBetsPlaced: "No winning bets were placed for the most recent drawing! Place a bet with /tx"

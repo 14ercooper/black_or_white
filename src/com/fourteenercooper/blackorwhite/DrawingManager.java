@@ -21,17 +21,17 @@ public class DrawingManager {
 			public void run () {
 				try {
 					performDrawing();
-				} catch (SQLException e) {
+				} catch (SQLException | InstantiationException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
 		};
 		Main.scheduler.scheduleSyncRepeatingTask(Main.main, drawingScheduler, 10L,
-				(long) (ConfigParser.getDrawingRate() * 60f));
+				(long) (ConfigParser.getDrawingRate() * 60f * 20f));
 	}
 	
 	// This actually handles performing a drawing
-	private void performDrawing () throws SQLException {
+	private void performDrawing () throws SQLException, InstantiationException, IllegalAccessException {
 		// Some variables for the drawing
 		String winningColor, losingColor = null;
 		Random r = new Random ();
@@ -45,6 +45,9 @@ public class DrawingManager {
 		// Gets the bets for each color
 		Map<String,String> winningBets = Main.wrapper.getBets(winningColor);
 		Map<String,String> losingBets = Main.wrapper.getBets(losingColor);
+		if (winningBets.size() == 0) {
+			Bukkit.getServer().broadcastMessage(ConfigParser.getLangData("noBetsPlaced"));
+		}
 		// Loop through losing bets
 		for (Map.Entry<String,String> bet : losingBets.entrySet()) {
 			// Inform them they lost
@@ -52,6 +55,7 @@ public class DrawingManager {
 		}
 		// Loop through winning bets
 		awardPlayers (winningBets, winningColor);
+		Main.wrapper.resetTable(ConfigParser.getDatabaseInfo("betsTable"));
 	}
 	
 	// This awards the players who won the bet
@@ -76,7 +80,7 @@ public class DrawingManager {
 				largestWin = bet;
 			}
 			// Broadcast to the player and give them money
-			wonMoneyBroadcast(username, betAmt * betMult, color);
+			wonMoneyBroadcast(username, betAmt * betMult, color, betMult);
 			econ.depositPlayer(username, betAmt * betMult);
 		}
 		// Broadcast to the entire world the largest payout, store it, and reset the bets MySQL database
@@ -87,10 +91,11 @@ public class DrawingManager {
 	
 	// This is a personal broadcast to any player who won money
 	@SuppressWarnings("deprecation")
-	private void wonMoneyBroadcast (String username, double bet, String color) {
+	private void wonMoneyBroadcast (String username, double bet, String color, double betMult) {
 		String text = ConfigParser.getLangData("betWin");
 		text = text.replace("<win>", Double.toString(bet));
 		text = text.replace("<color>", color);
+		text = text.replace("<bet>", Double.toString(bet / betMult));
 		OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(username);
 		if (player.isOnline())
 			player.getPlayer().sendMessage(text);
@@ -101,7 +106,7 @@ public class DrawingManager {
 	private void lostMoneyBroadcast (String username, String amount, String color) {
 		String text = ConfigParser.getLangData("betLose");
 		text = text.replace("<color>", color);
-		text.replace("<bet>", amount);
+		text = text.replace("<bet>", amount);
 		OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(username);
 		if (player.isOnline())
 			player.getPlayer().sendMessage(text);
