@@ -74,6 +74,29 @@ public class MySQLWrapper {
 		}
 	}
 	
+	// Checks if a user has already bet
+	public boolean alreadyBet (String username) {
+		try {
+			connect();
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException e1) {
+			e1.printStackTrace();
+		}
+		boolean result = false;
+		ResultSet results = null;
+		try {
+			results = makeQuery("SELECT * FROM " + betsTable + " WHERE username = '" + username + "';");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			result = results.next();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		disconnect();
+		return result;
+	}
+	
 	// These run all the behind-the-scenes work with the database
 	// Database-related variables
 	private int port;

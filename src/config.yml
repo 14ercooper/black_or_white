@@ -10,6 +10,7 @@ database:
 
 winReturn: 1.5
 drawingRate: 60
+broadcastRate: 10
 announceWin: true
 
 lang:
@@ -19,3 +20,7 @@ lang:
   betLose: "Your bet for <color> was unsuccessful. You lost your <bet>."
   betBroadcast: "<player> just won <win> by betting on <color> in Black or White!"
   noBetsPlaced: "No winning bets were placed for the most recent drawing! Place a bet with /tx"
+  tai: "Tai"
+  xiu: "Xiu"
+  broadcast: "Place a bet in Black or White using /tx!"
+  betAlreadyPlaced: "You have already placed a bet for this drawing! Please wait until the next drawing!"

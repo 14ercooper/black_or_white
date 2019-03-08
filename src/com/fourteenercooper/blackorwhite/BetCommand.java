@@ -22,9 +22,18 @@ public class BetCommand implements CommandExecutor {
 						// Can they cover the bet?
 						String username = sender.getName();
 						if (Main.getEconomy().getBalance(username) - Double.parseDouble(args[1]) > 0) {
+							// Makes sure they haven't already placed a bet for this drawing
+							if (Main.wrapper.alreadyBet(username)) {
+								((Player) sender).sendMessage(ConfigParser.getLangData("betAlreadyPlaced"));
+								return true;
+							}
 							// Place the bet and take the money
 							Main.getEconomy().withdrawPlayer(username, Double.parseDouble(args[1]));
 							Main.wrapper.storeBet(username, args[0].toLowerCase(), args[1]);
+							if (args[0].equalsIgnoreCase("tai"))
+								args[0] = ConfigParser.getLangData("tai");
+							else
+								args[0] = ConfigParser.getLangData("xiu");
 							sender.sendMessage(ConfigParser.getLangData("betPlaced").replace("<bet>", args[1]).replace("<color>", args[0]));
 							return true;
 						} else {

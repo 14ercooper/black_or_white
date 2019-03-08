@@ -38,6 +38,10 @@ public class ConfigParser {
 		return Float.parseFloat(Main.pluginConfig.getString("drawingRate"));
 	}
 	
+	public static float getBroadcastRate () {
+		return Float.parseFloat(Main.pluginConfig.getString("broadcastRate"));
+	}
+	
 	public static boolean announceWinner () {
 		return Main.pluginConfig.getBoolean("announceWin");
 	}

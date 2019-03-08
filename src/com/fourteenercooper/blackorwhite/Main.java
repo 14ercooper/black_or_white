@@ -57,6 +57,7 @@ public class Main extends JavaPlugin {
 		manager = new DrawingManager();
 		scheduler = Bukkit.getServer().getScheduler();
 		manager.scheduleDrawing();
+		manager.scheduleBroadcast();
 	}
 	
 	@Override

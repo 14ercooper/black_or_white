@@ -12,6 +12,7 @@ import net.milkbowl.vault.economy.Economy;
 public class DrawingManager {
 
 	public Runnable drawingScheduler;
+	public Runnable broadcastScheduler;
 	
 	// This schedules future drawings, which iterative schedule future drawings. This is run originally from the main function on bootup.
 	// DO NOT USE /reload with this plugin, it will break stuff
@@ -29,6 +30,16 @@ public class DrawingManager {
 		Main.scheduler.scheduleSyncRepeatingTask(Main.main, drawingScheduler, 10L,
 				(long) (ConfigParser.getDrawingRate() * 60f * 20f));
 	}
+	public void scheduleBroadcast () {
+		broadcastScheduler = new Runnable () {
+			@Override
+			public void run () {
+				Bukkit.getServer().broadcastMessage(ConfigParser.getLangData("broadcast"));
+			}
+		};
+		Main.scheduler.scheduleSyncRepeatingTask(Main.main, broadcastScheduler, (long) (ConfigParser.getBroadcastRate() * 60f * 10f),
+				(long) (ConfigParser.getBroadcastRate() * 60f * 20f));
+	}
 	
 	// This actually handles performing a drawing
 	private void performDrawing () throws SQLException, InstantiationException, IllegalAccessException {
@@ -45,6 +56,16 @@ public class DrawingManager {
 		// Gets the bets for each color
 		Map<String,String> winningBets = Main.wrapper.getBets(winningColor);
 		Map<String,String> losingBets = Main.wrapper.getBets(losingColor);
+		// Make the colors translatable
+		if (winningColor.equalsIgnoreCase("tai")) {
+			winningColor = ConfigParser.getLangData("tai");
+			losingColor = ConfigParser.getLangData("xiu");
+		}
+		else {
+			winningColor = ConfigParser.getLangData("xiu");
+			losingColor = ConfigParser.getLangData("tai");
+		}
+		// Makes sure a winning bet was placed
 		if (winningBets.size() == 0) {
 			Bukkit.getServer().broadcastMessage(ConfigParser.getLangData("noBetsPlaced"));
 		}
